@@ -1,7 +1,7 @@
 Day 1 - 6hrs (Friday Feb 5, 2017)
 * Set up and played with arduino and LED strips, got colours and animations working a bit.
 
-Day 2 - 
+Day 2 -
 * Installed platformio in Atom cause Arduino IDE blows.
 * Added Adafruit Neopixel Library using command ```pio lib search neopixel``` to find it then ```pio lib install 28``` to install the correct one.
 * Hid error `GCC error` can't find this library, because apparently PlatformIO is too clever for `linter-gcc` (turned off that plugin for atom).
@@ -10,3 +10,5 @@ Day 2 -
   * CPP code needs to declare functions first, whereas arduino code doesn't.  Arduino is weird? What is PlatformIO doing exactly!?
 
 * Create a simple class to do blinking lights on the led strip; this is a precursor to doing cooler stuff :D
+
+* Created hardware prototype with three targets & three lines in between.
