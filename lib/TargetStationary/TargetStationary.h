@@ -10,7 +10,8 @@
 #define EMPTY_TARGET 0
 #define APPEARING_TARGET 1
 #define AVAILABLE_TARGET 2
-#define HIT_TARGET 3
+#define COUNTDOWN_TARGET 3
+#define HIT_TARGET 4
 
 class Target
 {

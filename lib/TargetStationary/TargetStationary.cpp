@@ -12,8 +12,8 @@ Target::Target(CRGB * leds, int startPin, int length, long on, long off)
 
   ledState = LOW;
   previousMillis = 0;
-  state = EMPTY_TARGET;
-  lastState = EMPTY_TARGET;
+  state = COUNTDOWN_TARGET;
+  lastState = COUNTDOWN_TARGET;
 }
 
 void Target::Update()
@@ -54,15 +54,30 @@ void Target::Update()
         // }
         brightness = sin8(updown)/10;
         colour = CHSV(122 + brightness*brightness/25, 255, 255);
+        for(int i = 0; i < _length; i++) {
+          _leds[_startPin + i] = colour;
+        }
         break;
       case AVAILABLE_TARGET:
         brightness = sin8((currentMillis/3 + 255/2)%255)/5;
         colour = CHSV(255, 255, 255 - brightness);
+        for(int i = 0; i < _length; i++) {
+          _leds[_startPin + i] = colour;
+        }
+        break;
+      case COUNTDOWN_TARGET:
+        updown = _length*(currentMillis%1000)/1000;
+        brightness = (currentMillis%5000)/1000;
+        for(int i = 0; i < _length; i++) {
+          if (i < updown) {
+            _leds[_startPin + i] = CHSV(brightness*255/5,255,255);
+          } else {
+            _leds[_startPin + i] = CHSV((brightness-1)*255/5,255,255);
+          }
+        }
         break;
     }
-    for(int i = 0; i < _length; i++) {
-      _leds[_startPin + i] = colour;
-    }
+
   }
 
   // check to see if it's time to change the state of the LED

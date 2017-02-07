@@ -1,43 +1,42 @@
-#include "FastLED.h"
-#include <BlinkenLight.h>
-#include <TargetStationary.h>
 
 #include "Arduino.h"
 
-#define TOTAL_LIGHTS 140
 
-// BlinkenLight target(13, 1000, 1000);
+// these constants won't change:
+const int ledPin = 13;      // led connected to digital pin 13
+const int knockSensor = A0; // the piezo is connected to analog pin 0
+const int threshold = 100;  // threshold value to decide when the detected sound is a knock or not
 
-CRGB leds[TOTAL_LIGHTS];
+// these variables will change:
+int sensorReading = 0;      // variable to store the value read from the sensor pin
+int ledState = LOW;         // variable used to store the last LED status, to toggle the light
 
-Target colourTarget(leds, 0, 23, 1000, 1000);
-Target colourStrip1(leds, 23, 24, 1500, 1500);
-Target colourTarget2(leds, 47, 22, 1000, 1000);
-Target colourStrip2(leds, 69, 24, 1500, 1500);
-Target colourTarget3(leds, 93, 23, 1000, 1000);
-Target colourStrip3(leds, 116, 24, 1500, 1500);
+long int prevMillis;
+long int currentMillis;
 
 void setup() {
-  FastLED.addLeds<NEOPIXEL, 6>(leds, TOTAL_LIGHTS);
-  colourStrip1.state = AVAILABLE_TARGET;
-  colourStrip2.state = AVAILABLE_TARGET;
-  colourStrip3.state = AVAILABLE_TARGET;
-
+  prevMillis = millis();
+  pinMode(ledPin, OUTPUT); // declare the ledPin as as OUTPUT
   Serial.begin(9600);
 }
 
 void loop() {
-  // static uint8_t hue = 0;
-  // FastLED.showColor(CHSV(hue++, 255, 150));
-  // delay(100);
-  colourTarget.Update();
-  colourTarget2.Update();
-  colourTarget3.Update();
-  colourStrip1.Update();
-  colourStrip2.Update();
-  colourStrip3.Update();
-  if (millis() % 500 == 0){
-    Serial.print(leds[1]);
+  currentMillis = millis();
+  // read the sensor and store it in the variable sensorReading:
+  sensorReading = analogRead(knockSensor);
+
+  if (currentMillis - prevMillis >= 500){
+    if (sensorReading >= threshold) {
+      // toggle the status of the ledPin:
+      ledState = !ledState;
+      // update the LED pin itself:
+      digitalWrite(ledPin, ledState);
+      // send the string "Knock!" back to the computer, followed by newline
+      Serial.println("Knock!");
+      Serial.println(sensorReading);
+    }
+
+    prevMillis = currentMillis - currentMillis%5000;
   }
-  FastLED.show();
+
 }
